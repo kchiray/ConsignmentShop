@@ -52,8 +52,7 @@ namespace ConsignmentShopUI
                 Description = "Book about a whale",
                 Price = 4.50M, 
                 Owner = store.Vendors[0],
-                PaymentDistributed = true, 
-                Sold = true
+                PaymentDistributed = true
                 
             });
 
@@ -64,8 +63,7 @@ namespace ConsignmentShopUI
                 Description = "A boy troubled with the task of saving the world!",
                 Price = 7.25M,
                 Owner = store.Vendors[2],
-                PaymentDistributed = true,
-                Sold = true
+                PaymentDistributed = true
 
             });
 
@@ -76,8 +74,7 @@ namespace ConsignmentShopUI
                 Description = "A book about the revolution",
                 Price = 4.32M,
                 Owner = store.Vendors[1],
-                PaymentDistributed = true,
-                Sold = true
+                PaymentDistributed = true
 
             });
 
@@ -88,8 +85,7 @@ namespace ConsignmentShopUI
                 Description = "4th installation to the Harry Potter series!",
                 Price = 4.25M,
                 Owner = store.Vendors[2],
-                PaymentDistributed = true,
-                Sold = true
+                PaymentDistributed = true
 
             });
 
@@ -98,7 +94,7 @@ namespace ConsignmentShopUI
 
         private void ItemBind()
         {
-            itemsBinding.DataSource = store.Items;
+            itemsBinding.DataSource = store.Items.Where(x => x.Sold == false).ToList(); 
             itemsListBox.DataSource = itemsBinding;
 
             itemsListBox.DisplayMember = "Display";
@@ -121,11 +117,6 @@ namespace ConsignmentShopUI
             shoppingCartData.Add(selectedItem);
             cartBinding.ResetBindings(false);
         }
-
-        private void ConsignmentShop_Load(object sender, EventArgs e)
-        {
-
-        }
         private void makePurchase_Click(object sender, EventArgs e)
         {
             foreach (Item item in shoppingCartData)
@@ -134,8 +125,17 @@ namespace ConsignmentShopUI
             }
 
             shoppingCartData.Clear();
+
+            itemsBinding.DataSource = store.Items.Where(x => x.Sold == false).ToList();
+
             cartBinding.ResetBindings(false);
+            itemsBinding.ResetBindings(false);
         }
+
+        private void ConsignmentShop_Load(object sender, EventArgs e)
+        {
+
+        }        
 
         private void headerText_Click(object sender, EventArgs e)
         {
