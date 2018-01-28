@@ -15,8 +15,12 @@ namespace ConsignmentShopUI
     {
         private Store store = new Store();
         private List<Item> shoppingCartData = new List<Item>();
+
         BindingSource itemsBinding = new BindingSource();
         BindingSource cartBinding = new BindingSource();
+        BindingSource vendorsBinding = new BindingSource();
+
+        private decimal storeProfit = 0;
 
         public ConsignmentShop()
         {
@@ -24,6 +28,7 @@ namespace ConsignmentShopUI
             SetupData();
             ItemBind();
             CartBind();
+            VendorBind();
         }
 
         private void SetupData()
@@ -110,6 +115,15 @@ namespace ConsignmentShopUI
             shoppingCartListbox.ValueMember = "Display";
         }
 
+        private void VendorBind()
+        {
+            vendorsBinding.DataSource = store.Vendors;
+            vendorsListbox.DataSource = vendorsBinding;
+
+            vendorsListbox.DisplayMember = "Display";
+            vendorsListbox.ValueMember = "Display";
+        }
+
         private void addToCart_Click(object sender, EventArgs e)
         {
             Item selectedItem = (Item)itemsListBox.SelectedItem;
@@ -122,14 +136,19 @@ namespace ConsignmentShopUI
             foreach (Item item in shoppingCartData)
             {
                 item.Sold = true;
+                item.Owner.PaymentDue += (decimal)item.Owner.Commission * item.Price;
+                storeProfit += (1 - (decimal)item.Owner.Commission) * item.Price;
             }
 
             shoppingCartData.Clear();
 
             itemsBinding.DataSource = store.Items.Where(x => x.Sold == false).ToList();
 
+            storeProfitValue.Text = string.Format("${0}", storeProfit);
+
             cartBinding.ResetBindings(false);
             itemsBinding.ResetBindings(false);
+            vendorsBinding.ResetBindings(false);
         }
 
         private void ConsignmentShop_Load(object sender, EventArgs e)
@@ -151,6 +170,15 @@ namespace ConsignmentShopUI
         {
 
         }
-        
+
+        private void vendorsListbox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void storeProfitValue_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
